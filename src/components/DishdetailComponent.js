@@ -10,7 +10,7 @@ const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength = (len) => (val) => val && (val.length >= len);
 const required = (val) => val && val.length;
 
-class CommentSubmitForm extends Component {
+class CommentForm extends Component {
 
     constructor(props) {
         super(props);
@@ -23,6 +23,9 @@ class CommentSubmitForm extends Component {
     handleSubmit(values) {
         this.toggleModal();
         alert('Your Inputs are: ' + JSON.stringify(values));
+
+        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
+
     }
 
     toggleModal() {
@@ -119,7 +122,7 @@ function RenderDish({ dish }) {
     }
 }
 
-function RenderComments({ comments }) {
+function RenderComments({ comments, addComment, dishId }) {
     if (comments == null) {
         return (<div></div>)
     }
@@ -140,7 +143,7 @@ function RenderComments({ comments }) {
             <ul className='list-unstyled'>
                 {cmnts}
             </ul>
-
+            <CommentForm dishId={dishId} addComment={addComment} />
         </div>
     )
 }
@@ -148,6 +151,7 @@ function RenderComments({ comments }) {
 
 
 const DishDetail = (props) => {
+
     if (props.dish == null) {
         return (<div></div>)
     }
@@ -169,8 +173,10 @@ const DishDetail = (props) => {
                     <RenderDish dish={props.dish} width="100% !important" />
                 </div>
                 <div className="col-12 col-md-5 m-1">
-                    <RenderComments width="100% !important" comments={props.comments} />
-                    <CommentSubmitForm />
+                    <RenderComments comments={props.comments}
+                        addComment={props.addComment}
+                        dishId={props.dish.id}
+                    />
                 </div>
             </div>
         </div>
